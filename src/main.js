@@ -9,6 +9,10 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'; // 导入swiper
 import 'swiper/dist/css/swiper.css';
 Vue.use(VueAwesomeSwiper); // 使用swiper
 /* eslint-disable no-new */
+router.beforeEach(function (to, from, next) {
+  document.title = to.meta.title;
+  next()
+});
 
 new Vue({
   el: '#app',

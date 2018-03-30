@@ -4,6 +4,7 @@ let url = require('url');
 
 let sliders = require('./sliders');
 let pageSize = 5; //每页显示5个
+let cartBooks = [];
 function read(cb) {
   fs.readFile('./book.json', 'utf8', function (err, data) {
     if (err || data.length === 0) {
@@ -31,7 +32,7 @@ http.createServer((req, res) => {
   let {pathname, query} = url.parse(req.url, true); // true把query转化为对象
   // 获取轮播数据接口   /sliders
   if (pathname === '/sliders') {
-    res.setHeader("Conten-Type", "application/json;charset=utf8");
+    res.setHeader("Content-Type", "application/json;charset=utf8");
     return res.end(JSON.stringify(sliders))
   }
   // 热门图书
@@ -52,12 +53,12 @@ http.createServer((req, res) => {
           read(function (books) {
             let book = books.find(item => item.bookId === id);
             if (!book) book = {};
-            res.setHeader("Conten-Type", "application/json;charset=utf8");
+            res.setHeader("Content-Type", "application/json;charset=utf8");
             res.end(JSON.stringify(book))
           })
         } else { // 返回所有
           read(function (books) {
-            res.setHeader("Conten-Type", "application/json;charset=utf8");
+            res.setHeader("Content-Type", "application/json;charset=utf8");
             res.end(JSON.stringify(books.reverse()))
           })
         }
@@ -126,10 +127,32 @@ http.createServer((req, res) => {
       if (books.length <= offset + pageSize) {
         hasMore = false;
       }
-      res.setHeader("Conten-Type", "application/json;charset=utf8");
+      res.setHeader("Content-Type", "application/json;charset=utf8");
       res.end(JSON.stringify({books: result, hasMore}))
     });
     return
   }
+  // 添加购物车
+  if(pathname === '/addcart'){
+    let id = parseInt(query.id);
+    cartBooks.push(id);
+    res.end(JSON.stringify({}))
+  }
+  // 初始化购物车数据
+  if(pathname === '/getCart'){
+    let total = 0;
+    read(function (books) {
+      let result = books.filter(item=>{
+        if(cartBooks.includes(item.bookId)){
+          total+=Number(item.bookPrice);
+          return true
+        }
+        return false
+      });
+      res.setHeader("Content-Type","application/json;charset=utf8");
+      res.end(JSON.stringify({result,total}))
+    })
+  }
+
 }).listen(8000);
 

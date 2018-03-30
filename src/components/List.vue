@@ -9,7 +9,11 @@
             <h2>{{ book.bookName }}</h2>
             <p>{{ book.bookInfo }}</p>
             <p>{{ book.bookPrice }}</p>
-            <button @click.stop="remove(book.bookId)">删除</button>
+            <div class="but-list">
+              <button @click.stop="remove(book.bookId)">删除</button>
+              <button @click.stop="add(book.bookId)">加购物车</button>
+            </div>
+
           </div>
         </router-link>
       </ul>
@@ -20,7 +24,7 @@
 
 <script>
   import MHeader from '../base/MHeader.vue';
-  import {pagination, removeBooks} from '../api';
+  import {pagination, removeBooks, addCart} from '../api';
 
   export default {
     data() {
@@ -43,6 +47,9 @@
       async remove(id) {
         await removeBooks(id); //调用接口删除后台数据
         this.books = this.books.filter(item => item.bookId !== id) //删除前端数据
+      },
+      async add(id){
+        await addCart(id)
       },
       loadMore(){
         this.timer && clearTimeout(this.timer);
@@ -90,10 +97,15 @@
           font-weight: bold;
           font-size: 14px;
         }
+        .but-list{
+          display: flex;
+          justify-content: flex-end;
+        }
         button {
           display: block;
           width: 60px;
           height: 25px;
+          margin-right: 20px;
           background-color: orangered;
           border: none;
           border-radius: 15px;

@@ -46,3 +46,11 @@ export let getAll = ()=> {
 export let pagination = (offset)=> {
   return axios.get(`/page?offset=${offset}`)
 };
+// 添加购物车
+export let addCart = (id)=> {
+  return axios.get(`/addcart?id=${id}`)
+};
+// 获取购物车数据
+export let getCart = (id)=> {
+  return axios.get('/getCart')
+};
