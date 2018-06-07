@@ -5,6 +5,10 @@
 ## Build Setup
 
 ``` bash
+#下载本项目
+
+git clone https://github.com/wangyuantoy/vue-project-books.git
+
 # 安装依赖
 npm install
 
